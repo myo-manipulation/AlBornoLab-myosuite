@@ -1,5 +1,4 @@
-from myosuite.utils import gym; register=gym.register
-
+from gym.envs.registration import register
 import collections
 import os
 import numpy as np
@@ -121,7 +120,7 @@ def register_myohand_object_trackref(task_name, object_name, motion_path=None):
         entry_point='myosuite.envs.myo.myodm.myodm_v0:TrackEnv',
         max_episode_steps=75, #50steps*40Skip*2ms = 4s
         kwargs={
-                'model_path': '/../assets/hand/myohand_object.xml',
+                'model_path': '/../assets/hand/MyoHand_object.xml',
                 'object_name': object_name,
                 'reference':curr_dir+'/data/'+motion_path,
             }
@@ -145,7 +144,7 @@ def register_MyoHand_object(object_name):
         entry_point='myosuite.envs.myo.myodm.myodm_v0:TrackEnv',
         max_episode_steps=50, #50steps*40Skip*2ms = 4s
         kwargs={
-                'model_path': '/../assets/hand/myohand_object.xml',
+                'model_path': '/../assets/hand/MyoHand_object.xml',
                 'object_name': object_name,
                 'reference': {'time':(0.0, 4.0),
                                 'robot':np.zeros((1, dof_robot)),
@@ -164,7 +163,7 @@ def register_MyoHand_object(object_name):
         entry_point='myosuite.envs.myo.myodm.myodm_v0:TrackEnv',
         max_episode_steps=50, #50steps*40Skip*2ms = 4s
         kwargs={
-                'model_path': '/../assets/hand/myohand_object.xml',
+                'model_path': '/../assets/hand/MyoHand_object.xml',
                 'object_name': object_name,
                 'reference': {'time':(0.0, 4.0),
                                 'robot':np.zeros((2, dof_robot)),

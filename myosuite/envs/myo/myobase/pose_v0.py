@@ -4,7 +4,7 @@ Authors  :: Vikash Kumar (vikashplus@gmail.com), Vittorio Caggiano (caggiano@gma
 ================================================= """
 
 import collections
-from myosuite.utils import gym
+import gym
 import numpy as np
 
 from myosuite.envs.myo.base_v0 import BaseV0
@@ -142,7 +142,7 @@ class PoseEnvV0(BaseV0):
 
     # reset_type = none; init; random
     # target_type = generate; switch
-    def reset(self, **kwargs):
+    def reset(self):
 
         # udpate wegith
         if self.weight_bodyname is not None:
@@ -179,15 +179,14 @@ class PoseEnvV0(BaseV0):
         # update init state
         if self.reset_type is None or self.reset_type == "none":
             # no reset; use last state
-            ## NOTE: fatigue is also not reset in this case!
             obs = self.get_obs()
         elif self.reset_type == "init":
             # reset to init state
-            obs = super().reset(**kwargs)
+            obs = super().reset()
         elif self.reset_type == "random":
             # reset to random state
             jnt_init = self.np_random.uniform(high=self.sim.model.jnt_range[:,1], low=self.sim.model.jnt_range[:,0])
-            obs = super().reset(reset_qpos=jnt_init, **kwargs)
+            obs = super().reset(reset_qpos=jnt_init)
         else:
             print("Reset Type not found")
 

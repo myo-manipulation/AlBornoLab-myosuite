@@ -1,0 +1,13 @@
+Settings: 
+agent = PPO(e, policy, baseline, normalized_step_size=rl_step_size, seed=seed, save_logs=True, tensorboard_log="./ppo_objhold_tensorboard/")
+train_agent(job_name='.',
+            agent=agent,
+            seed=seed,
+            niter=1000,
+            gamma=0.995,
+            gae_lambda=0.97,
+            sample_mode="trajectories",
+            num_traj=96,
+            num_samples=0,
+            save_freq=100,
+            evaluation_rollouts=10)

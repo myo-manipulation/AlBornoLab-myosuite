@@ -4,7 +4,7 @@ Authors  :: Vikash Kumar (vikashplus@gmail.com), Vittorio Caggiano (caggiano@gma
 ================================================= """
 
 import collections
-from myosuite.utils import gym
+import gym
 import numpy as np
 from myosuite.envs.myo.base_v0 import BaseV0
 from myosuite.utils.quat_math import quat2mat
@@ -126,7 +126,7 @@ class ReachEnvV0(BaseV0):
         return qpos_new
 
 
-    def reset(self, **kwargs):
+    def reset(self):
         # generate random targets
         if np.ptp(self.joint_random_range)>0:
             self.sim.data.qpos = self.generate_qpos()
@@ -138,10 +138,11 @@ class ReachEnvV0(BaseV0):
 
         # generate resets
         if np.ptp(self.joint_random_range)>0:
-            obs = super().reset(reset_qpos= self.generate_qpos(), **kwargs)
+            obs = super().reset(reset_qpos= self.generate_qpos())
         else:
-            obs = super().reset(**kwargs)
+            obs = super().reset()
         return obs
+
 
 class WalkEnvV0(BaseV0):
 
@@ -278,11 +279,11 @@ class WalkEnvV0(BaseV0):
         return qpos, qvel
 
     def step(self, *args, **kwargs):
-        results = super().step(*args, **kwargs)
+        obs, reward, done, info = super().step(*args, **kwargs)
         self.steps += 1
-        return results
+        return obs, reward, done, info
 
-    def reset(self, **kwargs):
+    def reset(self):
         self.steps = 0
         if self.reset_type == 'random':
             qpos, qvel = self.get_randomized_initial_state()
@@ -291,7 +292,7 @@ class WalkEnvV0(BaseV0):
         else:
             qpos, qvel = self.sim.model.key_qpos[0], self.sim.model.key_qvel[0]
         self.robot.sync_sims(self.sim, self.sim_obsd)
-        obs = super().reset(reset_qpos=qpos, reset_qvel=qvel, **kwargs)
+        obs = super().reset(reset_qpos=qpos, reset_qvel=qvel)
         return obs
 
     def muscle_lengths(self):
@@ -478,7 +479,7 @@ class TerrainEnvV0(WalkEnvV0):
         self.init_qpos[:] = self.sim.model.key_qpos[0]
         self.init_qvel[:] = 0.0
 
-    def reset(self, **kwargs):
+    def reset(self):
         self.steps = 0
         if self.terrain == 'rough':
             rough = self.np_random.uniform(low=-.5, high=.5, size=(10000,))
@@ -520,7 +521,7 @@ class TerrainEnvV0(WalkEnvV0):
         else:
             qpos, qvel = self.sim.model.key_qpos[0], self.sim.model.key_qvel[0]
         self.robot.sync_sims(self.sim, self.sim_obsd)
-        obs = BaseV0.reset(self, reset_qpos=qpos, reset_qvel=qvel, **kwargs)
+        obs = BaseV0.reset(self, reset_qpos=qpos, reset_qvel=qvel)
         return obs
 
     def _get_done(self):

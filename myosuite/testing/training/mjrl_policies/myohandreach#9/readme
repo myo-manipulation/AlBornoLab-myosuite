@@ -1,0 +1,24 @@
+
+#Policy hyperparameters
+policy_size = (256, 256)  # Size of the policy network
+seed = 123  # Random seed used for reproducibility
+rl_step_size = 0.1
+learnrate = 0.000025
+entcoeff = 0.0000036
+batchsize = 32
+num_epoch = 10
+
+#Value Function hyperparameters
+vf_hidden_size = (256, 256) # Value Function Network size
+seed = 123  # Random seed used for reproducibility
+rl_step_size = 0.1
+learnrate = 0.000025
+entcoeff = 0.036
+batchsize = 32
+num_epoch = 10
+regcoef = 1e-3
+
+#Training hyperparameters
+iterations = 1000
+gamma = 0.995
+gae_lambda = 0.97

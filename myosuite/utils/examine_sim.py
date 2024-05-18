@@ -8,7 +8,7 @@ Example:\n
     - python utils/examine_sim.py --sim_path envs/arms/franka/assets/franka_reach_v0.xml --ctrl "0, 0, -1, -1, 0, 0, 0, 0, 0"\n
 """
 
-from mujoco import MjModel, MjData, mj_step, mj_forward, viewer
+from mujoco_py import load_model_from_path, MjSim, MjViewer
 import click
 import numpy as np
 
@@ -19,19 +19,20 @@ import numpy as np
 @click.option('-h', '--horizon', type=int, help='time (s) to simulate', default=5)
 
 def main(sim_path, qpos, ctrl, horizon):
-    model = MjModel.from_xml_path(sim_path)
-    data = MjData(model)
+    model = load_model_from_path(sim_path)
+    sim = MjSim(model)
+    viewer = MjViewer(sim)
 
-    viewer.launch(model, data)
-
-    while data.time<horizon:
+    while sim.data.time<horizon:
         if qpos is not None:
-            data.qpos[:] = np.array(qpos.split(','), dtype=np.float)
-            mj_forward(model, data)
-            data.time += model.opt.timestep
+            sim.data.qpos[:] = np.array(qpos.split(','), dtype=np.float)
+            sim.forward()
+            sim.data.time += sim.model.opt.timestep
         elif ctrl is not None:
-            data.ctrl[:] = np.array(ctrl.split(','), dtype=np.float)
-            mj_step(model, data)
+            sim.data.ctrl[:] = np.array(ctrl.split(','), dtype=np.float)
+            sim.step()
+        viewer.render()
 
 if __name__ == '__main__':
     main()
+

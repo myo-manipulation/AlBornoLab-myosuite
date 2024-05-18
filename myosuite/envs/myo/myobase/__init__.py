@@ -3,7 +3,7 @@
 Authors  :: Vikash Kumar (vikashplus@gmail.com), Vittorio Caggiano (caggiano@gmail.com)
 ================================================= """
 
-from myosuite.utils import gym; register=gym.register
+from gym.envs.registration import register
 from myosuite.envs.env_variants import register_env_variant
 
 import os
@@ -34,7 +34,6 @@ def register_env_with_variants(id, entry_point, max_episode_steps, kwargs):
             variant_id=id[:3]+"Fati"+id[3:],
             silent=True
         )
-
     #register variants with tendon transfer
     if id[:7] == "myoHand":
         register_env_variant(
@@ -48,13 +47,54 @@ curr_dir = os.path.dirname(os.path.abspath(__file__))
 
 print("MyoSuite:> Registering Myo Envs")
 
+# MyoArm
+register_env_with_variants(id='ArmReachFixed-v0',
+        entry_point='myosuite.envs.myo.myobase.armreach_v0:ReachEnvV0',
+        max_episode_steps=100,
+                           kwargs={
+                               'model_path': curr_dir+'/../assets/arm/myoarm_reach.xml',
+                               'normalize_act': True,
+                                'obj_xyz_range': [[-.3, -.5, 0.9], [-.3, -.5, 0.9]], #xyz: neg x, neg y and positive z(around 1)
+                               'far_th': 0.25
+                           }
+    )
+
+register_env_with_variants(id='CenterReachOut-v0',
+                           entry_point='myosuite.envs.myo.myobase.CenterReachOut_v0:ReachEnvV0',
+                           max_episode_steps=100,
+                           kwargs={
+                               'model_path': curr_dir + '/../assets/arm/myoarm_centerreachout.xml',
+                               'normalize_act': True,
+                               'obj_xyz_range': [[-.05, -0.1, 1.09], [0.1, -0.3, 1.09], [0.15, -0.2, 1.09],[0.1, -0.1, 1.09], [-.05,-0.4, 1.09],[-.15, -0.3, 1.09], [-.2, -0.2, 1.09],[-.15, -0.1, 1.09]],#[[-.2, -.5, 1.09], [-.2, -.25, 1.09],[-.2, -0.1 ,1.09], [0.1, -.5, 1.09], [0.1, -.25, 1.09],[0.1, -0.05 ,1.09], [0.1, -.5, 1.09],[-.05, -0.1 ,1.09]]
+                               # xyz: neg x, neg y and positive z(around 1)
+                               'far_th': 0.15
+                           }
+                           )
+
+
+register_env_with_variants(id='myoArmReachFixed-v1',
+                           entry_point='myosuite.envs.myo.myobase.CenterReachOut_v0:ReachEnvV0',
+                           max_episode_steps=150,
+                           kwargs={
+                               'model_path': curr_dir + '/../assets/arm/myoarm_relocate.xml',
+                               'normalize_act': True,
+                               'frame_skip': 5,
+                               'pos_th': 0.1,  # cover entire base of the receptacle
+                               'rot_th': np.inf,  # ignore rotation errors
+                               'target_xyz_range': {'high': [0.0, 0.0, 0.0], 'low': [0.0, 0.0, 0.0]},
+                               'target_rxryrz_range': {'high': [0.0, 0.0, 0.0], 'low': [0.0, 0.0, 0.0]}
+                           }
+                           )
+
+
+
 # Finger-tip reaching ==============================
 register_env_with_variants(id='motorFingerReachFixed-v0',
         entry_point='myosuite.envs.myo.myobase.reach_v0:ReachEnvV0',
         max_episode_steps=200,
         kwargs={
             'model_path': curr_dir+'/../../../simhive/myo_sim/finger/motorfinger_v0.xml',
-            'target_reach_range': {'IFtip': ((0.2, 0.05, 0.20), (0.2, 0.05, 0.20)),},
+            'target_reach_range': {'IFtip': ((.1, -.1, .1), (.1, -.1, .1)),},
             'normalize_act': True,
             'frame_skip': 5,
         }
@@ -288,7 +328,6 @@ register_env_with_variants(id='myoHandPoseRandom-v0',  #reconsider
 # Gait Torso Reaching ==============================
 from myosuite.physics.sim_scene import SimBackend
 sim_backend = SimBackend.get_sim_backend()
-
 leg_model='/../../../simhive/myo_sim/leg/myolegs.xml'
 
 register_env_with_variants(id='myoLegStandRandom-v0',
@@ -296,7 +335,7 @@ register_env_with_variants(id='myoLegStandRandom-v0',
         max_episode_steps=150,
         kwargs={
             'model_path': curr_dir+leg_model,
-            'joint_random_range': (-.2, 0.2), #range of joint randomization (jnt = init_qpos + random(range)
+            'joint_random_range': (0.2, -0.2), #range of joint randomization (jnt = init_qpos + random(range)
             'target_reach_range': {
                 'pelvis': ((-.05, -.05, 0), (0.05, 0.05, 0)),
                 },
@@ -304,7 +343,6 @@ register_env_with_variants(id='myoLegStandRandom-v0',
             'far_th': 0.44
         }
     )
-
 
 # Gait Torso Walking ==============================
 register_env_with_variants(id='myoLegWalk-v0',
@@ -376,7 +414,7 @@ register_env_with_variants(id='myoLegStairTerrainWalk-v0',
             'target_y_vel':1.2,  # desired y velocity in m/s
             'target_rot': None,   # if None then the initial root pos will be taken, otherwise provide quat
             'terrain':'stairs',
-            'variant':'fixed'
+            'variant':'fixed',
         }
     )
 
@@ -390,10 +428,10 @@ register_env_with_variants(id='myoHandReachFixed-v0',
             'model_path': curr_dir+'/../assets/hand/myohand_pose.xml',
             'target_reach_range': {
                 'THtip': ((-0.165, -0.537, 1.495), (-0.165, -0.537, 1.495)),
-                'IFtip': ((-0.151, -0.547, 1.455), (-0.151, -0.547, 1.455)),
-                'MFtip': ((-0.146, -0.547, 1.447), (-0.146, -0.547, 1.447)),
-                'RFtip': ((-0.148, -0.543, 1.445), (-0.148, -0.543, 1.445)),
-                'LFtip': ((-0.148, -0.528, 1.434), (-0.148, -0.528, 1.434)),
+                'IFtip': ((-0.151, -0.547, 1.455), (-0.165, -0.537, 1.495)),
+                'MFtip': ((-0.146, -0.547, 1.447), (-0.165, -0.537, 1.495)),
+                'RFtip': ((-0.148, -0.543, 1.445), (-0.165, -0.537, 1.495)),
+                'LFtip': ((-0.148, -0.528, 1.434), (-0.165, -0.537, 1.495)),
                 },
             'normalize_act': True,
             'far_th': 0.044
@@ -415,6 +453,7 @@ register_env_with_variants(id='myoHandReachRandom-v0',
         'far_th': 0.034
     }
 )
+
 
 # Hand-Joint key turn ==============================
 register_env_with_variants(id='myoHandKeyTurnFixed-v0',
