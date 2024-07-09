@@ -10,10 +10,6 @@ if sys.version_info.major != 3:
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname), encoding="utf-8", errors="ignore").read()
 
-def fetch_requirements():
-    with open("requirements.txt", "r", encoding="utf-8", errors="ignore") as f:
-        reqs = f.read().strip().split("\n")
-    return reqs
 
 # https://packaging.python.org/guides/single-sourcing-package-version/
 def find_version(version_file_path) -> str:
@@ -55,5 +51,4 @@ if __name__ == "__main__":
         package_data={'': mjc_models_files},
         packages=find_packages(exclude=("myosuite.agents")),
         python_requires=">=3.8",
-        install_requires=fetch_requirements(),
     )
