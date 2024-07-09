@@ -55,7 +55,7 @@ register_env_with_variants(id='ArmReachFixed-v0',
                                'model_path': curr_dir+'/../assets/arm/myoarm_reach.xml',
                                'normalize_act': True,
                                 'obj_xyz_range': [[-.3, -.5, 0.9], [-.3, -.5, 0.9]], #xyz: neg x, neg y and positive z(around 1)
-                               'far_th': 0.25
+                               'far_th': 0.05
                            }
     )
 
@@ -63,11 +63,11 @@ register_env_with_variants(id='CenterReachOut-v0',
                            entry_point='myosuite.envs.myo.myobase.CenterReachOut_v0:ReachEnvV0',
                            max_episode_steps=100,
                            kwargs={
-                               'model_path': curr_dir + '/../assets/arm/myoarm_centerreachout.xml',
+                               'model_path': curr_dir + '/../assets/arm/myoarm_centerreachout.xml', 
                                'normalize_act': True,
-                               'obj_xyz_range': [[-.05, -0.1, 1.09], [0.1, -0.3, 1.09], [0.15, -0.2, 1.09],[0.1, -0.1, 1.09], [-.05,-0.4, 1.09],[-.15, -0.3, 1.09], [-.2, -0.2, 1.09],[-.15, -0.1, 1.09]],#[[-.2, -.5, 1.09], [-.2, -.25, 1.09],[-.2, -0.1 ,1.09], [0.1, -.5, 1.09], [0.1, -.25, 1.09],[0.1, -0.05 ,1.09], [0.1, -.5, 1.09],[-.05, -0.1 ,1.09]]
+                               'obj_xyz_range': [[-0.03125069216102037, -0.024064832105254508, 1.09], [0.10199416560603433, -0.3457434044594767, 1.09], [0.15718516789601672, -0.2125, 1.09],[0.1019938068049917, -0.07925623673839724, 1.09], [-0.031249807868617828,-0.40093516789591876, 1.09],[-0.16449389389172694, -0.3457436761747822, 1.09], [-0.21968516789535328, -0.21249949997036174, 1.09],[-0.1680450158763584, -0.07925561667782058, 1.09]],#[[-.2, -.5, 1.09], [-.2, -.25, 1.09],[-.2, -0.1 ,1.09], [0.1, -.5, 1.09], [0.1, -.25, 1.09],[0.1, -0.05 ,1.09], [0.1, -.5, 1.09],[-.05, -0.1 ,1.09]]
                                # xyz: neg x, neg y and positive z(around 1)
-                               'far_th': 0.15
+                               'far_th': 0.2
                            }
                            )
 

@@ -92,7 +92,7 @@ class ReachEnvV0(BaseV0):
         reach_dist = np.linalg.norm(obs_dict['reach_err'], axis=-1)
         act_mag = np.linalg.norm(self.obs_dict['act'], axis=-1) / self.sim.model.na if self.sim.model.na != 0 else 0
         far_th = self.far_th
-        near_th = 0.1 
+        near_th = 0.05 
         drop = reach_dist > self.drop_th
         rwd_dict = collections.OrderedDict((
             # Optional Keys
@@ -107,13 +107,16 @@ class ReachEnvV0(BaseV0):
         ))
         rwd_dict['dense'] = np.sum([wt * rwd_dict[key] for key, wt in self.rwd_keys_wt.items()], axis=0)
         return rwd_dict
+    
 
     # generate a valid target
     def generate_target_pose(self):
         random_index = np.random.randint(0, len(self.obj_xyz_range))
         self.sim.model.body_pos[self.object_bid] = self.obj_xyz_range[random_index]
+        self.current_object_pos = self.obj_xyz_range[random_index]
         self.sim.forward()
-
+    
+        
     def reset(self, reset_qpos=None, reset_qvel=None):
 
         # randomize init arms pose
